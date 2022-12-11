@@ -1,7 +1,7 @@
 import { Badge, Input } from 'antd';
 import { SearchOutlined, HomeOutlined, ShoppingCartOutlined, CopyOutlined, UserOutlined, BarChartOutlined, LogoutOutlined } from '@ant-design/icons';
 
-function Header() {
+const Header = () => {
   return (
     <div className='border-b mb-6'>
         <header className='py-4 px-6 flex justify-between items-center gap-10'>
