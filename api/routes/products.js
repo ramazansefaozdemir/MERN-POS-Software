@@ -8,6 +8,7 @@ router.get("/get-all", async (req, res) =>{
         res.status(200).json(products);
     } catch (error) {
         console.log("error, product information could not be retrieved.");
+       res.status(500).json(error);
     }
 })
 
@@ -18,7 +19,7 @@ router.post("/add-product", async (req, res) =>{
         await newProduct.save();
         res.status(200).json("Item added successfully.");
     } catch (error) {
-        res.status(400).json(error);
+       res.status(500).json(error);
     }
 })
 
@@ -28,6 +29,7 @@ router.put("/update-product", async (req, res) =>{
         res.status(200).json("Item updated successfully.");
     } catch (error) {
         console.log("error, product information could not be updated.")
+       res.status(500).json(error);
     }
 })
 
@@ -37,6 +39,7 @@ router.delete("/delete-product", async (req, res) =>{
         res.status(200).json("Item deleted successfully.");
     } catch (error) {
         console.log("error, product deletion failed.");
+       res.status(500).json(error);
     }
 })
 
