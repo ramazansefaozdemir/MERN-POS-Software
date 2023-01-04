@@ -4,7 +4,7 @@ import { PlusOutlined, EditOutlined } from '@ant-design/icons';
 import Add from "./Add";
 
 
-const Products = () => {
+const Products = ({categories}) => {
     const [products, setProducts] = useState([]);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   useEffect(()=>{
@@ -22,7 +22,7 @@ const Products = () => {
   return (
     <div className="products-wrapper grid gap-4 grid-cols-card">
         {products.map((item)=>(
-            <ProductItem item={item}/>
+            <ProductItem item={item} key={item._id}/>
         ))}
 
         <div className="product-item border hover:shadow-lg cursor-pointer transition-all select-none bg-purple-800 flex justify-center items-center hover:opacity-90" onClick={() => setIsAddModalOpen(true)}>
@@ -31,7 +31,13 @@ const Products = () => {
         <div className="product-item border hover:shadow-lg cursor-pointer transition-all select-none bg-orange-800 flex justify-center items-center hover:opacity-90">
             <EditOutlined className="text-white md:text-2lg"/>
         </div>
-        <Add isAddModalOpen={isAddModalOpen} setIsAddModalOpen={setIsAddModalOpen} />
+        <Add 
+            isAddModalOpen={isAddModalOpen} 
+            setIsAddModalOpen={setIsAddModalOpen} 
+            categories={categories}
+            products={products}
+            setProducts={setProducts}
+        />
     </div>
   )
 }
