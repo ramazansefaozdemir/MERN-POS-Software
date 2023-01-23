@@ -34,20 +34,25 @@ const Edit = () => {
         }
         getCategories();
       }, []);
+
    
       const onFinish = (values) => {
         try {
-          fetch("http://localhost:5001/api/products/add-product", {
-            method: "POST",
-            body: JSON.stringify(values),
+          fetch("http://localhost:5001/api/products/update-product", {
+            method: "PUT",
+            body: JSON.stringify({...values, productId: editingItem._id}),
             headers: { "Content-type": "application/json; charset=UTF-8" },
           });
-          message.success("Ürün Başarıyla Eklendi.");
+          message.success("Ürün Başarıyla Güncellendi.");
+          setProducts(
+              products.map((item)=>{
+                  if(item._id === editingItem._id) {
+                      return values
+                    }
+                    return item;
+                })
+            );
           form.resetFields();
-          setProducts([
-            ...products,
-            { ...values, _id: Math.random(), price: Number(values.price) },
-          ]);
           setIsEditModalOpen(false);
         } catch (error) {
           console.log(error);
@@ -59,12 +64,12 @@ const Edit = () => {
         try {
             fetch("http://localhost:5001/api/products/delete-product", {
                 method: "DELETE",
-                body: JSON.stringify({categoryId: id}),
+                body: JSON.stringify({productId: id}),
                 headers: {"Content-type": "application/json; charset=UTF-8"}
             }).then((response)=>{
                 if(response.status === 200){
                     message.success("Ürün Başarı İle Silindi.");
-                    setProducts(categories.filter((item)=>item._id !== id))
+                    setProducts(products.filter((item)=>item._id !== id))
                 }else {
                     message.error("Ürün Silinemedi.")
                 }
@@ -134,7 +139,7 @@ const Edit = () => {
     </Form>
     
     <Modal
-      title="Yeni Ürün Ekle"
+      title="Ürün Düzenle"
       open={isEditModalOpen}
       onCancel={() => setIsEditModalOpen(false)}
       footer={false}
@@ -183,7 +188,7 @@ const Edit = () => {
         </Form.Item>
         <Form.Item className="flex justify-end mb-0">
           <Button type="primary" htmlType="submit">
-            Oluştur
+            Güncelle
           </Button>
         </Form.Item>
       </Form>
