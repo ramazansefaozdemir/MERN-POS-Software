@@ -1,47 +1,118 @@
-import { Card, Table, Button } from "antd"
+import { Card, Table, Button, message, Popconfirm } from "antd"
 import { useState } from "react";
 import Header from "../components/header/Header"
 import CreateBill from "./CreateBill";
+import { useSelector,useDispatch } from "react-redux";
+import { PlusCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
+import { increase, decrease, deleteCart } from '../redux/cartSlice.js';
 
 const CartPage = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const dataSource = [
-        {
-          key: '1',
-          name: 'Mike',
-          age: 32,
-          address: '10 Downing Street',
-        },
-        {
-          key: '2',
-          name: 'John',
-          age: 42,
-          address: '10 Downing Street',
-        },
-      ];
-      
-      const columns = [
-        {
-          title: 'Name',
-          dataIndex: 'name',
-          key: 'name',
-        },
-        {
-          title: 'Age',
-          dataIndex: 'age',
-          key: 'age',
-        },
-        {
-          title: 'Address',
-          dataIndex: 'address',
-          key: 'address',
-        },
-    ];
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const cart = useSelector((state) => state.cart)
+  const dispatch = useDispatch();
+    
+  const columns = [
+    {
+      title: 'Ürün Görseli',
+      dataIndex: 'img',
+      key: 'img',
+      with: '125px',
+      render: (text)=>{
+        return <img src={text} alt="" className='w-full h-20 object-contain' />
+    } 
+    },
+    {
+      title: 'Ürün Adı',
+      dataIndex: 'title',
+      key: 'title',
+    },
+    {
+      title: 'Kategori',
+      dataIndex: 'category',
+      key: 'category',
+    },
+    {
+      title: 'Ürün Fiyatı',
+      dataIndex: 'price',
+      key: 'price',
+      render: (text) => {
+        return (<span>{new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(text)}</span>)
+      }
+    },
+    {
+      title: 'Ürün Adedi',
+      dataIndex: 'quantity',
+      key: 'quantity',
+      render: (text, record) => {
+        return (<>
+          <div className='flex items-center gap-x-1'>
+          <Button 
+            type='primary'
+            size='small'
+            icon={<PlusCircleOutlined />}
+            className='w-full flex items-center justify-center !rounded-full'
+            onClick={() => dispatch(increase(record))}
+          />
+          <span className='font-bold w-3 inline-block text-center'>{record.quantity}</span>
+          <Button 
+            type='primary'
+            size='small'
+            icon={<MinusCircleOutlined />}
+            className='w-full flex items-center justify-center !rounded-full'
+            onClick={() => {
+              if(record.quantity === 1){
+                if(window.confirm('Ürün Silinsin Mi?')){
+                  dispatch(decrease(record));
+                  message.success('Ürün Sepetten Silindi.')
+                }
+              }
+              if(record.quantity > 1) {
+                dispatch(decrease(record))
+              }
+            }}
+          />
+        </div>
+        </>)
+      }
+    },
+    {
+      title: 'Toplam Fiyat',
+      dataIndex: 'total',
+      key: 'total',
+      render: (_,record) => {
+        return (<span>{new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(record.quantity * record.price)}</span>)
+      }
+    },
+    {
+      title: 'Action',
+      render: (_,record) => {
+        return (
+          <Popconfirm
+            title="Silmek istediğinize emin misiniz ?"
+            onConfirm={()=> {
+              dispatch(deleteCart(record));
+              message.success('Ürün Sepetten Silindi.')
+            }}
+            okText="Evet"
+            cancelText="Hayır"
+          >
+            <Button 
+              type="link" 
+              danger
+            >
+              Sil
+            </Button>
+          </Popconfirm>
+        )
+      }
+    },
+  ];
+
   return (
     <>
         <Header />
         <div className="px-6">
-            <Table dataSource={dataSource} columns={columns} bordered pagination={false} />
+            <Table dataSource={cart.cartItems} columns={columns} bordered pagination={false} />
             <div className="cart-total flex justify-end mt-4">
                 <Card className="w-72">
                     <div className="flex justify-between">

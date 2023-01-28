@@ -18,6 +18,11 @@ body {
   display: none;
 }
 
+.menu-link .anticon {
+  display: flex;
+  justify-content: center;
+}
+
 @media (min-width: 768px) {
   body {
     overflow: hidden;
