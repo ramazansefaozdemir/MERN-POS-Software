@@ -112,22 +112,39 @@ const CartPage = () => {
     <>
         <Header />
         <div className="px-6">
-            <Table dataSource={cart.cartItems} columns={columns} bordered pagination={false} />
+            <Table 
+              dataSource={cart.cartItems} 
+              columns={columns} 
+              bordered 
+              pagination={false} 
+              key={cart.cartItems._id} 
+              scroll={{
+                x: 1200,
+                y: 300
+              }}
+            />
             <div className="cart-total flex justify-end mt-4">
                 <Card className="w-72">
                     <div className="flex justify-between">
                         <span>Ara Toplam</span>
-                        <span>549.00₺</span>
+                        <span>{cart.total > 0 ? new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(cart.total) : 0}₺</span>
                     </div>
                     <div className="flex justify-between my-2">
-                        <span>KDV Toplam %8</span>
-                        <span className="text-red-600">+43.92₺</span>
+                        <span>KDV %{cart.tax}</span>
+                        <span className="text-red-600">+{new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format((cart.total * cart.tax) / 100)}₺</span>
                     </div>
                     <div className="flex justify-between">
                         <b>Toplam</b>
-                        <b>592.92₺</b>
+                        <b>{new Intl.NumberFormat('tr', { style: 'currency', currency: 'TRY' }).format(cart.total + (cart.total * cart.tax) / 100)}₺</b>
                     </div>
-                    <Button className="mt-4 w-full" type="primary" size="large" onClick={() => setIsModalOpen(true)}>Sipariş Oluştur</Button>
+                    <Button 
+                      className="mt-4 w-full" 
+                      type="primary" size="large" 
+                      onClick={() => setIsModalOpen(true)}
+                      disabled={cart.cartItems.length === 0}
+                    >
+                      Sipariş Oluştur
+                    </Button>
                 </Card>
             </div>
         </div>

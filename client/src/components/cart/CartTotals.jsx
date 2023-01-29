@@ -2,11 +2,13 @@ import { Button, message } from 'antd'
 import { ClearOutlined, PlusCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteCart, increase, decrease, reset } from '../../redux/cartSlice';
+import { useNavigate } from 'react-router-dom';
 
 
 const CartTotals = () => {
   const cart = useSelector((state)=> state.cart);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   return (
     <div className='cart h-full flex flex-col max-h-[calc(100vh_-_90px)]'>
@@ -77,6 +79,7 @@ const CartTotals = () => {
             size='large' 
             className='w-full'
             disabled={cart.cartItems.length === 0}
+            onClick={() => navigate('/cart')}
           >
             Sipariş Oluştur
           </Button>
