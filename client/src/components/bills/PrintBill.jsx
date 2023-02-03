@@ -1,6 +1,15 @@
-import { Button, Modal } from "antd"
+import { Button, Modal } from "antd";
+import { useRef } from "react";
+import { useReactToPrint } from "react-to-print";
+import { formatPrice } from "../../utils/formatPrice";
 
 const PrintBill = ({isModalOpen, setIsModalOpen, customer}) => {
+
+  const componentRef = useRef();
+
+  const handePrint = useReactToPrint({
+    content: () => componentRef.current,
+  })
 
   return (
     <Modal 
@@ -10,7 +19,7 @@ const PrintBill = ({isModalOpen, setIsModalOpen, customer}) => {
         onCancel={() => setIsModalOpen(false)}
         width={800}
     >
-        <section className="py-20 bg-black">
+        <section className="py-20 bg-white" ref={componentRef}>
           <div className="max-w-5xl mx-auto bg-white px-6">
             <article className="overflow-hidden">
               <div className="logo my-6 text-slate-700">
@@ -20,17 +29,17 @@ const PrintBill = ({isModalOpen, setIsModalOpen, customer}) => {
                   <div className="grid sm:grid-cols-4 grid-cols-3 gap-12">
                     <div className="font-light text-sm text-slate-500">
                       <p className="font-normal text-slate-700">Fatura Detayı:</p>
-                      <p>Unwrapped</p>
-                      <p>Fake Street 123</p>
-                      <p>San Javier</p>
-                      <p>CA 1234</p>
+                      <b>{customer?.customerName}</b>
+                      <p>{customer?.customerPhoneNumber}</p>
+                      {/* <p>San Javier</p>
+                      <p>CA 1234</p> */}
                     </div>
                     <div className="text-sm font-light text-slate-500">
                       <p className="font-normal text-slate-700">Fatura</p>
-                      <p>The Boring Company</p>
-                      <p>Tesla Street 007</p>
+                      <p>{customer?.paymentMode}</p>
+                      {/* <p>Tesla Street 007</p>
                       <p>Frisco</p>
-                      <p>CA 0000</p>
+                      <p>CA 0000</p> */}
                     </div>
                     <div className="text-sm font-light text-slate-500">
                       <div>
@@ -85,13 +94,13 @@ const PrintBill = ({isModalOpen, setIsModalOpen, customer}) => {
                            </div>
                          </td>
                          <td className="py-4 text-center sm:table-cell hidden">
-                           <span>{new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(item.price)}₺</span>
+                           <span>{formatPrice(item.price)}₺</span>
                          </td>
                          <td className="py-4 sm:text-center text-right sm:table-cell hidden">
                            <span>{item.quantity}</span>
                          </td>
                          <td className="py-4 text-end">
-                           <span>{new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(item.price * item.quantity)}₺</span>
+                           <span>{formatPrice(item.price * item.quantity)}₺</span>
                          </td>
                        </tr>
                       ))}
@@ -105,7 +114,7 @@ const PrintBill = ({isModalOpen, setIsModalOpen, customer}) => {
                           <p className="font-normal text-slate-500">Ara Toplam</p>
                         </th>
                         <th className="text-right pt-4" colSpan={4} scope="row">
-                          <span className="font-normal text-slate-500">{new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(customer?.subTotal)}₺</span>
+                          <span className="font-normal text-slate-500">{formatPrice(customer?.subTotal)}₺</span>
                         </th>
                       </tr>
                       <tr>
@@ -117,7 +126,7 @@ const PrintBill = ({isModalOpen, setIsModalOpen, customer}) => {
                       <p className="font-normal text-slate-700">KDV</p>
                     </th>
                         <th className="text-right pt-4" colSpan={4} scope="row">
-                          <span className="font-normal text-red-600">+{new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(customer?.tax)}₺</span>
+                          <span className="font-normal text-red-600">+{formatPrice(customer?.tax)}₺</span>
                         </th>
                       </tr>
                       <tr>
@@ -128,7 +137,7 @@ const PrintBill = ({isModalOpen, setIsModalOpen, customer}) => {
                           <p className="font-normal text-slate-700">Genel Toplam</p>
                         </th>
                         <th className="text-right pt-4" colSpan={4} scope="row">
-                          <span className="font-normal text-slate-700">{new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(customer?.totalAmount)}₺</span>
+                          <span className="font-normal text-slate-700">{formatPrice(customer?.totalAmount)}₺</span>
                         </th>
                       </tr>
                     </tfoot>
@@ -145,7 +154,13 @@ const PrintBill = ({isModalOpen, setIsModalOpen, customer}) => {
           </div>
         </section>
         <div className="flex justify-end mt-4">
-          <Button type="primary" size="large">Yazdır</Button>
+          <Button 
+            type="primary" 
+            size="large"
+            onClick={handePrint}
+          >
+            Yazdır
+          </Button>
         </div>
     </Modal>
   )

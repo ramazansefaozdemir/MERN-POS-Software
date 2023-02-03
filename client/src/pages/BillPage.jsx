@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import PrintBill from '../components/bills/PrintBill';
 import Header from '../components/header/Header'
 import { useEffect } from 'react';
+import { formatPrice } from '../utils/formatPrice';
 
 const BillPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,7 +24,6 @@ const BillPage = () => {
     }, [])
 
     
-      
   const columns = [
     {
       title: 'Müşteri Adı',
@@ -57,7 +57,7 @@ const BillPage = () => {
       dataIndex: 'totalAmount',
       key: 'totalAmount',
       render: (text) => {
-        return <span>{text}₺</span>
+        return <span>{formatPrice(text)}₺</span>
       }
     },
     {
@@ -91,6 +91,10 @@ const BillPage = () => {
               columns={columns} 
               bordered 
               pagination={false} 
+              scroll={{
+                x: 1000,
+                y: 300
+              }}
             />
             <PrintBill 
               isModalOpen={isModalOpen} 

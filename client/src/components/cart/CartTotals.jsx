@@ -3,6 +3,7 @@ import { ClearOutlined, PlusCircleOutlined, MinusCircleOutlined } from '@ant-des
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteCart, increase, decrease, reset } from '../../redux/cartSlice';
 import { useNavigate } from 'react-router-dom';
+import { formatPrice } from '../../utils/formatPrice';
 
 
 const CartTotals = () => {
@@ -60,17 +61,17 @@ const CartTotals = () => {
         <div className='border-b border-t'>
           <div className='flex justify-between p-2'>
             <b>Ara Toplam</b>
-            <span>{cart.total > 0 ? cart.total.toFixed(2) : 0}₺</span>
+            <span>{cart.total > 0 ? formatPrice(cart.total) : 0}</span>
           </div>
           <div className='flex justify-between p-2'>
             <b>KDV %{cart.tax}</b>
-            <span className='text-red-700'>{(cart.total * cart.tax) / 100 ? `+${((cart.total * cart.tax) / 100).toFixed(2)}` : 0}₺</span>
+            <span className='text-red-700'>{((cart.total * cart.tax) / 100) ? `+${formatPrice((cart.total * cart.tax) / 100)}` : 0}₺</span>
           </div>
         </div>
         <div className='border-b mt-4'>
           <div className='flex justify-between p-2'>
             <b className='text-xl text-green-500'>Genel Toplam</b>
-            <span className='text-xl'>{(cart.total + (cart.total * cart.tax) / 100).toFixed(2)}₺</span>
+            <span className='text-xl'>{formatPrice(cart.total + (cart.total * cart.tax) / 100)}</span>
           </div>
         </div>
         <div className='py-4 px-2'>

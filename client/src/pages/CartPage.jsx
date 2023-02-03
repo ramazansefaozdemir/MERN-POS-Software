@@ -5,6 +5,7 @@ import CreateBill from "./CreateBill";
 import { useSelector,useDispatch } from "react-redux";
 import { PlusCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { increase, decrease, deleteCart } from '../redux/cartSlice.js';
+import { formatPrice } from "../utils/formatPrice";
 
 const CartPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,7 +37,7 @@ const CartPage = () => {
       dataIndex: 'price',
       key: 'price',
       render: (text) => {
-        return (<span>{new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(text)}</span>)
+        return (<span>{formatPrice(text)}</span>)
       }
     },
     {
@@ -80,7 +81,7 @@ const CartPage = () => {
       dataIndex: 'total',
       key: 'total',
       render: (_,record) => {
-        return (<span>{new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(record.quantity * record.price)}</span>)
+        return (<span>{formatPrice(record.quantity * record.price)}</span>)
       }
     },
     {
@@ -127,15 +128,15 @@ const CartPage = () => {
                 <Card className="w-72">
                     <div className="flex justify-between">
                         <span>Ara Toplam</span>
-                        <span>{cart.total > 0 ? new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(cart.total) : 0}₺</span>
+                        <span>{cart.total > 0 ? formatPrice(cart.total) : 0}₺</span>
                     </div>
                     <div className="flex justify-between my-2">
                         <span>KDV %{cart.tax}</span>
-                        <span className="text-red-600">+{new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format((cart.total * cart.tax) / 100)}₺</span>
+                        <span className="text-red-600">+{formatPrice((cart.total * cart.tax) / 100)}₺</span>
                     </div>
                     <div className="flex justify-between">
                         <b>Toplam</b>
-                        <b>{new Intl.NumberFormat('tr', { style: 'currency', currency: 'TRY' }).format(cart.total + (cart.total * cart.tax) / 100)}₺</b>
+                        <b>{formatPrice(cart.total + (cart.total * cart.tax) / 100)}₺</b>
                     </div>
                     <Button 
                       className="mt-4 w-full" 

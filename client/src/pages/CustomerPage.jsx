@@ -1,47 +1,59 @@
 import { Table } from 'antd';
-import React from 'react'
+import { useEffect, useState } from 'react'
 import Header from '../components/header/Header'
 
 const CustomerPage = () => {
-    const dataSource = [
-        {
-          key: '1',
-          name: 'Mike',
-          age: 32,
-          address: '10 Downing Street',
-        },
-        {
-          key: '2',
-          name: 'John',
-          age: 42,
-          address: '10 Downing Street',
-        },
-      ];
+  const [billItems, setBillItems] = useState();
+  
+  useEffect(()=>{
+    try {
+      const getBills = async () =>{
+        const res = await fetch("http://localhost:5001/api/bills/get-all");
+        const data = await res.json();
+        setBillItems(data);
+      }
+      getBills();
+    } catch (error) {
+      console.log(error);
+    }
+  }, [])
       
-      const columns = [
-        {
-          title: 'Name',
-          dataIndex: 'name',
-          key: 'name',
-        },
-        {
-          title: 'Age',
-          dataIndex: 'age',
-          key: 'age',
-        },
-        {
-          title: 'Address',
-          dataIndex: 'address',
-          key: 'address',
-        },
-    ];
+  const columns = [
+    {
+      title: 'Müşteri Adı',
+      dataIndex: 'customerName',
+      key: 'customerName',
+    },
+    {
+      title: 'Telefon Numarası',
+      dataIndex: 'customerPhoneNumber',
+      key: 'customerPhoneNumber',
+    },
+    {
+      title: 'İşlem Tarihi',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (text) => {
+        return (<span>{text.substring(0,10)}</span>)
+      }
+    },
+  ];
 
   return (
     <>
         <Header />
         <div className="px-6">
             <h1 className='text-4xl font-bold text-center mb-4'>Müşteriler</h1>
-            <Table dataSource={dataSource} columns={columns} bordered pagination={false} />
+            <Table 
+              dataSource={billItems} 
+              columns={columns} 
+              bordered 
+              pagination={false} 
+              scroll={{
+                x: 1000,
+                y: 300
+              }}
+            />
         </div>
     </>
   )

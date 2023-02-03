@@ -2,6 +2,7 @@ import { Button, Card, Form, Input, Modal, Select, message } from "antd"
 import { useSelector, useDispatch } from "react-redux"
 import { reset } from "../redux/cartSlice";
 import { useNavigate } from "react-router-dom";
+import { formatPrice } from "../utils/formatPrice";
 
 const CreateBill = ({isModalOpen, setIsModalOpen}) => {
 
@@ -74,15 +75,15 @@ const CreateBill = ({isModalOpen, setIsModalOpen}) => {
             <Card>
                 <div className="flex justify-between">
                     <span>Ara Toplam</span>
-                    <span>{cart.total > 0 ? new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(cart.total) : 0}₺</span>
+                    <span>{cart.total > 0 ? formatPrice(cart.total) : 0}₺</span>
                 </div>
                 <div className="flex justify-between my-2">
                     <span>KDV %{cart.tax}</span>
-                    <span className="text-red-600">+{new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format((cart.total * cart.tax) / 100)}₺</span>
+                    <span className="text-red-600">+{formatPrice((cart.total * cart.tax) / 100)}₺</span>
                 </div>
                 <div className="flex justify-between">
                     <b>Toplam</b>
-                    <b>{new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(cart.total + (cart.total * cart.tax) / 100)}₺</b>
+                    <b>{formatPrice(cart.total + (cart.total * cart.tax) / 100)}₺</b>
                 </div>
                 <div className="flex justify-end">
                     <Button 
