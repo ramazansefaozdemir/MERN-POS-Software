@@ -18,7 +18,7 @@ const CartTotals = () => {
       {cart.cartItems.length > 0 ? cart.cartItems.map((item)=>(
           <li className="cart-item flex justify-between" key={item._id}>
           <div className='flex items-center'>
-            <img src={item.img} alt="" className='w-16 h-16 object-cover cursor-pointer' onClick={()=> {
+            <img src={item.img} alt="" className='w-16 h-16 object-contain cursor-pointer' onClick={()=> {
               dispatch(deleteCart(item));
               message.success('Ürün Sepetten Silindi.')
             }}/>

@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const app = express();
 const cors = require("cors");
+const logger = require("morgan");
 const port = 5001;
 
 dotenv.config()
@@ -16,6 +17,7 @@ const userRoute = require("./routes/users.js");
 
 const connect = async () => {
     try {
+        mongoose.set("strictQuery", false);
         await mongoose.connect(process.env.MONGO_URI)
         console.log("connected to mongoDB")
     } catch (error) {
@@ -25,6 +27,7 @@ const connect = async () => {
 
 //middlewares
     //app.get("/", (req, res) => res.send("Hello World!"))
+app.use(logger("dev"));
 app.use(express.json());
 app.use(cors());
 
