@@ -1,11 +1,20 @@
-import { Badge, Input } from 'antd';
+import { Badge, Input, message } from 'antd';
 import { SearchOutlined, HomeOutlined, ShoppingCartOutlined, CopyOutlined, UserOutlined, BarChartOutlined, LogoutOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux';
 import './index.css'
 
-const Header = () => {
+const Header = ({ setSearch }) => {
   const cart = useSelector((state)=>state.cart);
+  const navigate = useNavigate();
+
+  const logOut = () => {
+    if(window.confirm("Çıkış Yapmak İstediğinize Emin Misiniz?")){
+        localStorage.removeItem("posUser");
+        navigate("/login");
+        message.success("Çıkış işlemi başarılı");
+    }
+  }
   
   return (
     <div className='border-b mb-6'>
@@ -19,6 +28,7 @@ const Header = () => {
                     placeholder="Search..." 
                     prefix={<SearchOutlined />} 
                     className='rounded-full max-w-[800px]'
+                    onChange={(e)=>setSearch(e.target.value.toLowerCase())}
                 />
             </div>
             <div className="menu-links">
@@ -44,10 +54,12 @@ const Header = () => {
                     <BarChartOutlined className='text-xl md:text-2xl'/>
                     <span className='md:text-xs text-[10px]'>İstatistikler</span>
                 </Link>
-                <Link to={'/'} className='menu-link'>
-                    <LogoutOutlined className='text-xl md:text-2xl'/>
-                    <span className='md:text-xs text-[10px]'>Çıkış</span>
-                </Link>
+                <div onClick={logOut}>
+                    <Link className='menu-link'>
+                        <LogoutOutlined className='text-xl md:text-2xl'/>
+                        <span className='md:text-xs text-[10px]'>Çıkış</span>
+                    </Link>
+                </div>
             </div>
             <Badge count={cart.cartItems.length} offset={[0,0]} className='md:hidden flex'> 
                     <a href={'/'} className='menu-link'>

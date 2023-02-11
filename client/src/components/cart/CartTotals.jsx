@@ -65,7 +65,7 @@ const CartTotals = () => {
           </div>
           <div className='flex justify-between p-2'>
             <b>KDV %{cart.tax}</b>
-            <span className='text-red-700'>{((cart.total * cart.tax) / 100) ? `+${formatPrice((cart.total * cart.tax) / 100)}` : 0}₺</span>
+            <span className='text-red-700'>{((cart.total * cart.tax) / 100) ? `+${formatPrice((cart.total * cart.tax) / 100)}` : 0}</span>
           </div>
         </div>
         <div className='border-b mt-4'>
