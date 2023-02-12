@@ -1,27 +1,27 @@
-import { Button, Input, Space, Table } from 'antd';
-import { useEffect, useRef, useState } from 'react'
-import Header from '../components/header/Header'
-import Highlighter from 'react-highlight-words';
-import { SearchOutlined } from '@ant-design/icons';
+import { Button, Input, Space, Spin, Table } from "antd";
+import { useEffect, useRef, useState } from "react";
+import Header from "../components/header/Header";
+import Highlighter from "react-highlight-words";
+import { SearchOutlined } from "@ant-design/icons";
 
 const CustomerPage = () => {
   const [billItems, setBillItems] = useState();
-  const [searchText, setSearchText] = useState('');
-  const [searchedColumn, setSearchedColumn] = useState('');
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
-  
-  useEffect(()=>{
+
+  useEffect(() => {
     try {
-      const getBills = async () =>{
+      const getBills = async () => {
         const res = await fetch("http://localhost:5001/api/bills/get-all");
         const data = await res.json();
         setBillItems(data);
-      }
+      };
       getBills();
     } catch (error) {
       console.log(error);
     }
-  }, [])
+  }, []);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -30,10 +30,16 @@ const CustomerPage = () => {
   };
   const handleReset = (clearFilters) => {
     clearFilters();
-    setSearchText('');
+    setSearchText("");
   };
   const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
       <div
         style={{
           padding: 8,
@@ -44,11 +50,13 @@ const CustomerPage = () => {
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
           onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
           style={{
             marginBottom: 8,
-            display: 'block',
+            display: "block",
           }}
         />
         <Space>
@@ -100,7 +108,7 @@ const CustomerPage = () => {
     filterIcon: (filtered) => (
       <SearchOutlined
         style={{
-          color: filtered ? '#1890ff' : undefined,
+          color: filtered ? "#1890ff" : undefined,
         }}
       />
     ),
@@ -115,59 +123,67 @@ const CustomerPage = () => {
       searchedColumn === dataIndex ? (
         <Highlighter
           highlightStyle={{
-            backgroundColor: '#ffc069',
+            backgroundColor: "#ffc069",
             padding: 0,
           }}
           searchWords={[searchText]}
           autoEscape
-          textToHighlight={text ? text.toString() : ''}
+          textToHighlight={text ? text.toString() : ""}
         />
       ) : (
         text
       ),
   });
-      
+
   const columns = [
     {
-      title: 'Müşteri Adı',
-      dataIndex: 'customerName',
-      key: 'customerName',
-      ...getColumnSearchProps("customerName")
+      title: "Müşteri Adı",
+      dataIndex: "customerName",
+      key: "customerName",
+      ...getColumnSearchProps("customerName"),
     },
     {
-      title: 'Telefon Numarası',
-      dataIndex: 'customerPhoneNumber',
-      key: 'customerPhoneNumber',
-      ...getColumnSearchProps("customerPhoneNumber")
+      title: "Telefon Numarası",
+      dataIndex: "customerPhoneNumber",
+      key: "customerPhoneNumber",
+      ...getColumnSearchProps("customerPhoneNumber"),
     },
     {
-      title: 'İşlem Tarihi',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      title: "İşlem Tarihi",
+      dataIndex: "createdAt",
+      key: "createdAt",
       render: (text) => {
-        return (<span>{text.substring(0,10)}</span>)
-      }
+        return <span>{text.substring(0, 10)}</span>;
+      },
     },
   ];
 
   return (
     <>
-        <Header />
+      <Header />
+      <h1 className="text-4xl font-bold text-center mb-4">Müşteriler</h1>
+      {billItems ? (
         <div className="px-6">
-            <h1 className='text-4xl font-bold text-center mb-4'>Müşteriler</h1>
-            <Table 
-              dataSource={billItems} 
-              columns={columns} 
-              bordered 
-              pagination={false} 
-              scroll={{
-                x: 1000,
-                y: 300
-              }}
-            />
+          <Table
+            dataSource={billItems}
+            columns={columns}
+            bordered
+            pagination={false}
+            rowKey="_id"
+            scroll={{
+              x: 1000,
+              y: 300,
+            }}
+          />
         </div>
+      ) : (
+        <Spin
+          size="large"
+          className="absolute top-1/2 h-screen w-screen flex justify-center"
+        />
+      )}
     </>
-  )
-}
+  );
+};
 
-export default CustomerPage
+export default CustomerPage;

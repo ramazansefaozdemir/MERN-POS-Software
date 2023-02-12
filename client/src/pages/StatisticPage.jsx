@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import Header from "../components/header/Header"
-import StatisticCard from "../components/statistics/StatisticCard"
-import { Area, Pie } from '@ant-design/plots';
+import Header from "../components/header/Header";
+import StatisticCard from "../components/statistics/StatisticCard";
+import { Area, Pie } from "@ant-design/plots";
 import { formatPrice } from "../utils/formatPrice";
+import { Spin } from "antd";
 
 const StatisticPage = () => {
-
-  const [data, setData] = useState([]);
+  const [data, setData] = useState();
   const [products, setProducts] = useState([]);
+  const user = JSON.parse(localStorage.getItem("posUser"));
 
   useEffect(() => {
     asyncFetch();
@@ -18,100 +19,128 @@ const StatisticPage = () => {
       try {
         const res = await fetch("http://localhost:5001/api/products/get-all");
         const data = await res.json();
-        setProducts(data)
+        setProducts(data);
       } catch (error) {
         console.log(error);
       }
-    }
+    };
     getCategories();
-  }, [])
+  }, []);
 
   const asyncFetch = () => {
-    fetch('http://localhost:5001/api/bills/get-all')
+    fetch("http://localhost:5001/api/bills/get-all")
       .then((response) => response.json())
       .then((json) => setData(json))
       .catch((error) => {
-        console.log('fetch data failed', error);
+        console.log("fetch data failed", error);
       });
   };
   const config = {
     data,
-    xField: 'customerName',
-    yField: 'totalAmount',
+    xField: "customerName",
+    yField: "totalAmount",
     xAxis: {
       range: [0, 1],
     },
   };
 
-  
   const config2 = {
     appendPadding: 10,
     data,
-    angleField: 'totalAmount',
-    colorField: 'customerName',
+    angleField: "totalAmount",
+    colorField: "customerName",
     radius: 1,
     innerRadius: 0.6,
     label: {
-      type: 'inner',
-      offset: '-50%',
-      content: '{value}',
+      type: "inner",
+      offset: "-50%",
+      content: "{value}",
       style: {
-        textAlign: 'center',
+        textAlign: "center",
         fontSize: 14,
       },
     },
     interactions: [
       {
-        type: 'element-selected',
+        type: "element-selected",
       },
       {
-        type: 'element-active',
+        type: "element-active",
       },
     ],
     statistic: {
       title: false,
       content: {
         style: {
-          whiteSpace: 'pre-wrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
+          whiteSpace: "pre-wrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
         },
-        content: 'Toplam\nDeger',
+        content: "Toplam\nDeger",
       },
     },
   };
 
-
   const totalAmount = () => {
     const amount = data.reduce((total, item) => item.totalAmount + total, 0);
     return formatPrice(amount);
-  }
+  };
 
   return (
     <>
-        <Header />
+      <Header />
+      <h1 className="text-4xl font-bold text-center mb-4">
+            İstatistiklerim
+      </h1>
+      {data ? (
         <div className="px-6 md:pb-0 pb-20">
-            <h1 className='text-4xl font-bold text-center mb-4'>İstatistiklerim</h1>
-            <div className="statistic-section">
-                <h2 className="text-lg">Hoş Geldin {" "}<span className="text-green-600 font-bold text-xl">Admin</span></h2>
-                <div className="statistic-card grid xl:grid-cols-4 md:grid-cols-2 my-10 md:gap-10 gap-4">
-                  <StatisticCard title={"Toplam Müşteri"} amount={"10"} img={"/images/user.png"}/>
-                  <StatisticCard title={"Toplam Kazanç"} amount={totalAmount()} img={"/images/money.png"}/>
-                  <StatisticCard title={"Toplam Satış"} amount={data?.length} img={"/images/sale.png"}/>
-                  <StatisticCard title={"Toplam Ürün"} amount={products?.length} img={"/images/product.png"}/>
-                </div>
-                <div className="flex justify-between gap-10 lg:flex-row flex-col items-center">
-                  <div className="lg:w-1/2 lg:h-full h-72">
-                    <Area {...config} />
-                  </div>
-                  <div className="lg:w-1/2 lg:h-full h-72">
-                    <Pie {...config2} />
-                  </div>
-                </div>
+          <div className="statistic-section">
+            <h2 className="text-lg">
+              Hoş Geldin{" "}
+              <span className="text-green-600 font-bold text-xl">
+                {user.username.charAt(0).toUpperCase() + user.username.slice(1)}
+              </span>
+            </h2>
+            <div className="statistic-card grid xl:grid-cols-4 md:grid-cols-2 my-10 md:gap-10 gap-4">
+              <StatisticCard
+                title={"Toplam Müşteri"}
+                amount={"10"}
+                img={"/images/user.png"}
+              />
+              <StatisticCard
+                title={"Toplam Kazanç"}
+                amount={totalAmount()}
+                img={"/images/money.png"}
+              />
+              <StatisticCard
+                title={"Toplam Satış"}
+                amount={data?.length}
+                img={"/images/sale.png"}
+              />
+              <StatisticCard
+                title={"Toplam Ürün"}
+                amount={products?.length}
+                img={"/images/product.png"}
+              />
             </div>
+            <div className="flex justify-between gap-10 lg:flex-row flex-col items-center">
+              <div className="lg:w-1/2 lg:h-full h-72">
+                <Area {...config} />
+              </div>
+              <div className="lg:w-1/2 lg:h-full h-72">
+                <Pie {...config2} />
+              </div>
+            </div>
+          </div>
         </div>
+      ) : (
+        <Spin
+          size="large"
+          className="absolute top-1/2 h-screen w-screen flex justify-center"
+        />
+      )}
     </>
-  )
-}
+  );
+};
 
-export default StatisticPage
+export default StatisticPage;
